@@ -1,42 +1,77 @@
 var connection = require('./connection')
 
-var orm = {
-  selectAll: function(table, col, val) {
-    var queryString = ""
-  },
-  insertOne: function(select, table, col, val,) {
-    var queryString = ""
-  },
-  updateOne: function() {
-    var queryString = ""
-  },
-  selectWhere: function(tableInput, colToSearch, valOfCol) {
-    var queryString = "SELECT * FROM ?? WHERE ?? = ?";
-    connection.query(queryString, [tableInput, colToSearch, valOfCol], function(err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-  },
-  selectAndOrder: function(whatToSelect, table, orderCol) {
-    var queryString = "SELECT ?? FROM ?? ORDER BY ?? DESC";
-    console.log(queryString);
-    connection.query(queryString, [whatToSelect, table, orderCol], function(err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-  },
-  findWhoHasMost: function(tableOneCol, tableTwoForeignKey, tableOne, tableTwo) {
-    var queryString =
-      "SELECT ??, COUNT(??) AS count FROM ?? LEFT JOIN ?? ON ??.??= ??.id GROUP BY ?? ORDER BY count DESC LIMIT 1";
+function objToSql(ob) {
+  var arr = [];
 
-    connection.query(
-      queryString,
-      [tableOneCol, tableOneCol, tableOne, tableTwo, tableTwo, tableTwoForeignKey, tableOne, tableOneCol],
-      function(err, result) {
-        if (err) throw err;
-        console.log(result);
+  for (var key in ob) {
+    var value = ob[key];
+    if (Object.hasOwnProperty.call(ob, key)) {
+      if (typeof value === "string" && value.indexOf(" ") >= 0) {
+        value = "'" + value + "'";
       }
-    );
+
+      arr.push(key + "=" + value);
+    }
+  }
+  return arr.toString();
+}
+
+function printQuestionMarks(num) {
+  var arr = [];
+
+  for (var i = 0; i < num; i++) {
+    arr.push("?");
+  }
+
+  return arr.toString();
+}
+
+var orm = {
+  selectAll: function(tableInput, cb) {
+    var queryString = "SELECT * FROM " + tableInput + ";";
+    connection.query(queryString, function(err, result) {
+      if (err) {
+        throw err;
+      }
+      cb(result);
+    });
+  },
+  insertOne: function(table, cols, vals, cb) {
+    var queryString = "INSERT INTO " + table;
+
+    queryString += " (";
+    queryString += cols.toString();
+    queryString += ") ";
+    queryString += "VALUES (";
+    queryString += printQuestionMarks(vals.length);
+    queryString += ") ";
+
+    console.log(queryString);
+
+    connection.query(queryString, vals, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
+      cb(result);
+    });
+  },
+  updateOne: function(table, objColVals, condition, cb) {
+    var queryString = "UPDATE " + table;
+
+    queryString += " SET ";
+    queryString += objToSql(objColVals);
+    queryString += " WHERE ";
+    queryString += condition;
+
+    console.log(queryString);
+    connection.query(queryString, function(err, result) {
+      if (err) {
+        throw err;
+      }
+
+      cb(result);
+    });
   }
 };
 
