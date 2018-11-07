@@ -1,32 +1,50 @@
-<h1>Eat da Burgz</h1>
+<div class="row">
+  <div class="col-12 jumbotron">
+    <h1>Eat da Burgz</h1>
+    <img href="/public/assets/img/cheesburg.jpg" alt="Burgz">
+  </div>
+</div>
 
-<h2>Eat these Burgz!</h2>
+<div class="row">
+  <div class="col-6">
 
-<ul>
-  {{#each burger}}
-    {{#unless devoured}}
+    <h2>Eat these Burgz!</h2>
+
+    <ul>
+      {{#each burger}}
+      {{#unless devoured}}
       {{> burgers/burger-block devoured=false}}
-    {{/unless}}
-  {{/each}}
-</ul>
-
-<h2>Devoured Burgz</h2>
-
-<ul>
-  {{#each burger}}
-    {{#if devoured}}
-      {{> burgers/burger-block devoured=true}}
-    {{/if}}
-  {{/each}}
-</ul>
-
-<h2>Add a Burgz</h2>
-<form class="create-form">
-
-  <div class="form-group">
-    <label for="ca">Burgz Name:</label>
-    <input type="text" id="ca" name="name">
+      {{/unless}}
+      {{/each}}
+    </ul>
   </div>
 
-  <button type="submit">Add Burgz</button>
-</form>
+  <div class="col-6">
+
+    <h2>Devoured Burgz</h2>
+
+    <ul>
+      {{#each burger}}
+      {{#if devoured}}
+      {{> burgers/burger-block devoured=true}}
+      {{/if}}
+      {{/each}}
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+
+    <h2>Add a Burgz</h2>
+    <form class="create-form">
+
+      <div class="form-group">
+        <label for="ca">Burgz Name:</label>
+        <input type="text" id="ca" name="name">
+      </div>
+
+      <button type="submit">Add Burgz</button>
+    </form>
+  </div>
+</div>
